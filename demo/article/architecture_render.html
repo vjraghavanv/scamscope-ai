@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>ScamScope architecture</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;font-family:"Amazon Ember",-apple-system,"SF Pro Text",Segoe UI,Roboto,sans-serif}
+  body{background:#ffffff}
+  .canvas{width:1500px;height:860px;position:relative;background:#ffffff;padding:0}
+  .t{position:absolute;left:48px;top:28px;font-size:24px;font-weight:800;color:#232F3E}
+  .st{position:absolute;left:48px;top:62px;font-size:14px;color:#687078}
+  /* AWS cloud boundary */
+  .cloud{position:absolute;left:300px;top:110px;width:1150px;height:690px;border:2px solid #232F3E;border-radius:10px;}
+  .cloudlbl{position:absolute;left:316px;top:120px;font-size:14px;font-weight:700;color:#232F3E;display:flex;align-items:center;gap:8px}
+  .cloudlbl .ic{width:22px;height:22px;background:#232F3E;border-radius:4px;display:inline-grid;place-items:center;color:#fff;font-size:12px;font-weight:700}
+  /* nodes */
+  .node{position:absolute;width:150px;text-align:center}
+  .ico{width:84px;height:84px;margin:0 auto;border-radius:14px;display:grid;place-items:center;color:#fff;font-size:30px;box-shadow:0 8px 22px rgba(0,0,0,.18)}
+  .nlabel{margin-top:8px;font-size:13px;font-weight:700;color:#232F3E;line-height:1.3}
+  .nsub{font-size:11px;color:#687078;margin-top:2px;line-height:1.3}
+  .bedrock .ico{background:linear-gradient(160deg,#4D72F3,#3334B9)}
+  .lambda .ico{background:linear-gradient(160deg,#F78E04,#D05C17)}
+  .sec .ico{background:linear-gradient(160deg,#F54749,#C7131F)}
+  .iam .ico{background:linear-gradient(160deg,#F54749,#C7131F)}
+  .cw .ico{background:linear-gradient(160deg,#F54749,#B0084D)}
+  .user .ico{background:#232F3E;border-radius:50%}
+  .ext{position:absolute;width:150px;text-align:center}
+  .ext .box{height:84px;border:2px solid #6C8EBF;background:#ECECFF;border-radius:12px;display:grid;place-items:center;color:#232F3E;font-weight:700;font-size:14px}
+  svg{position:absolute;left:0;top:0;width:1500px;height:860px;pointer-events:none}
+  .elbl{position:absolute;font-size:11.5px;color:#232F3E;background:#fff;padding:1px 5px;border-radius:4px;line-height:1.25;text-align:center}
+  .muted{color:#687078;font-size:10.5px}
+</style></head>
+<body>
+<div class="canvas" id="cap">
+  <div class="t">ScamScope — phishing agent + URLhaus reputation tool</div>
+  <div class="st">AWS · us-east-1 · Amazon Bedrock (Nova Pro) · Strands Agents SDK</div>
+
+  <div class="cloud"></div>
+  <div class="cloudlbl"><span class="ic">aws</span> AWS Cloud · us-east-1</div>
+
+  <!-- arrows (draw first, under nodes) -->
+  <svg viewBox="0 0 1500 860">
+    <defs>
+      <marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#232F3E"/></marker>
+      <marker id="o" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#D05C17"/></marker>
+      <marker id="r" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#C7131F"/></marker>
+      <marker id="b" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#6C8EBF"/></marker>
+      <marker id="p" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#B0084D"/></marker>
+    </defs>
+    <!-- 1 user->bedrock -->
+    <line x1="175" y1="430" x2="360" y2="430" stroke="#232F3E" stroke-width="2.5" marker-end="url(#a)"/>
+    <!-- 2 bedrock->lambda -->
+    <line x1="505" y1="430" x2="660" y2="430" stroke="#D05C17" stroke-width="2.5" marker-end="url(#o)"/>
+    <!-- 3 lambda->secrets -->
+    <line x1="735" y1="405" x2="900" y2="320" stroke="#C7131F" stroke-width="2.5" marker-end="url(#r)"/>
+    <!-- 4 lambda->urlhaus -->
+    <line x1="810" y1="430" x2="1240" y2="430" stroke="#6C8EBF" stroke-width="2.5" marker-end="url(#b)"/>
+    <!-- 5 lambda->bedrock (return, dashed) -->
+    <path d="M700,505 L700,600 L440,600 L440,505" fill="none" stroke="#D05C17" stroke-width="2.2" stroke-dasharray="7 5" marker-end="url(#o)"/>
+    <!-- 6 bedrock->user (return, dashed) -->
+    <path d="M365,375 L365,345 L120,345 L120,380" fill="none" stroke="#232F3E" stroke-width="2.2" stroke-dasharray="7 5" marker-end="url(#a)"/>
+    <!-- iam->lambda -->
+    <line x1="700" y1="660" x2="700" y2="505" stroke="#C7131F" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#r)"/>
+    <!-- lambda->cw -->
+    <path d="M770,470 L940,620" fill="none" stroke="#B0084D" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#p)"/>
+  </svg>
+
+  <!-- edge labels -->
+  <div class="elbl" style="left:205px;top:402px">1 · message</div>
+  <div class="elbl" style="left:510px;top:388px">2 · invoke (boto3)<br><span class="muted">@tool check_url_reputation</span></div>
+  <div class="elbl" style="left:770px;top:338px">3 · GetSecretValue</div>
+  <div class="elbl" style="left:905px;top:396px">4 · lookup — URL string only<br><span class="muted">never fetches the link</span></div>
+  <div class="elbl" style="left:470px;top:608px">5 · verdict + evidence</div>
+  <div class="elbl" style="left:150px;top:318px">6 · cited answer</div>
+  <div class="elbl" style="left:590px;top:632px"><span class="muted">assumes role</span></div>
+  <div class="elbl" style="left:812px;top:548px"><span class="muted">writes logs</span></div>
+
+  <!-- nodes -->
+  <div class="node user" style="left:50px;top:388px"><div class="ico">👤</div><div class="nlabel">User</div><div class="nsub">suspicious message</div></div>
+  <div class="node bedrock" style="left:360px;top:388px"><div class="ico">🧠</div><div class="nlabel">Amazon Bedrock</div><div class="nsub">Nova Pro · Strands Agent</div></div>
+  <div class="node lambda" style="left:660px;top:388px"><div class="ico">λ</div><div class="nlabel">AWS Lambda</div><div class="nsub">check_url_reputation<br>python3.12 · 15s · 256MB</div></div>
+  <div class="node sec" style="left:900px;top:240px"><div class="ico">🔑</div><div class="nlabel">AWS Secrets Manager</div><div class="nsub">scamscope/urlhaus-auth-key</div></div>
+  <div class="node iam" style="left:660px;top:660px"><div class="ico">🛡️</div><div class="nlabel">AWS IAM</div><div class="nsub">scamscope-lambda-role<br>least privilege</div></div>
+  <div class="node cw" style="left:900px;top:620px"><div class="ico">📊</div><div class="nlabel">Amazon CloudWatch</div><div class="nsub">Logs — invocation proof</div></div>
+  <div class="ext" style="left:1240px;top:388px"><div class="box">URLhaus<br><span class="muted" style="font-weight:400">abuse.ch threat intel</span></div><div class="nsub" style="margin-top:6px">external API</div></div>
+</div>
+</body></html>

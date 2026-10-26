@@ -1,0 +1,38 @@
+flowchart TB
+    user([User])
+    msg["Suspicious message<br/>(may contain a URL)"]
+
+    subgraph agentLayer["Agent layer — Strands Agents SDK"]
+        agent["ScamScope Agent"]
+        bedrock["Amazon Bedrock<br/>Nova Pro<br/>(reasoning model)"]
+        tool["@tool check_url_reputation<br/>(boto3 invoke)"]
+    end
+
+    subgraph awsLayer["AWS — threat-intel tool backend"]
+        lambda["AWS Lambda<br/>check_url_reputation<br/>Python 3.12 · 15s · 256MB"]
+        secrets["AWS Secrets Manager<br/>URLhaus Auth-Key"]
+        logs["Amazon CloudWatch Logs<br/>invocation evidence"]
+        iam["AWS IAM<br/>least-privilege role<br/>read 1 secret · write own logs"]
+    end
+
+    urlhaus["URLhaus API<br/>malware-URL threat intel"]
+
+    user --> msg --> agent
+    agent <--> bedrock
+    agent -->|"decides to verify a URL"| tool
+    tool -->|"boto3 invoke"| lambda
+    lambda -->|"read Auth-Key"| secrets
+    lambda -->|"lookup (URL string only,<br/>never fetches the link)"| urlhaus
+    urlhaus -->|"verdict + evidence"| lambda
+    lambda -.->|"writes"| logs
+    iam -.->|"grants"| lambda
+    lambda -->|"structured JSON verdict"| tool
+    tool -->|"threat_match / no_match /<br/>invalid_input / lookup_failed"| agent
+    agent -->|"answer citing verified evidence:<br/>'confirmed malicious by URLhaus — do not click'"| user
+
+    classDef aws fill:#ff9900,stroke:#232f3e,color:#232f3e;
+    classDef ext fill:#c62828,stroke:#7f0000,color:#fff;
+    classDef neutral fill:#eceff1,stroke:#455a64,color:#1a1a1a;
+    class bedrock,lambda,secrets,logs,iam aws;
+    class urlhaus ext;
+    class user,msg,agent,tool neutral;

@@ -1,0 +1,74 @@
+<mxfile host="65bd71144e">
+    <diagram id="scamscope-arch" name="ScamScope Architecture">
+        <mxGraphModel dx="723" dy="670" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" value="ScamScope — phishing-analysis agent + URLhaus reputation tool (AWS, us-east-1)" style="text;html=1;fontSize=20;fontStyle=1;fontColor=#232F3E;align=left;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="30" width="1100" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="subtitle" value="Amazon Bedrock (Nova Pro) · Strands Agents SDK · us-east-1" style="text;html=1;fontSize=13;fontColor=#687078;align=left;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="62" width="1100" height="22" as="geometry"/>
+                </mxCell>
+                <mxCell id="user" value="User&#10;(suspicious message)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.user;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="360" width="60" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="awscloud" value="AWS Cloud · us-east-1" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=0;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud_alt;strokeColor=#232F3E;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#232F3E;dashed=0;" parent="1" vertex="1">
+                    <mxGeometry x="240" y="120" width="1120" height="620" as="geometry"/>
+                </mxCell>
+                <mxCell id="bedrock" value="Amazon Bedrock&#10;Nova Pro — Strands Agent" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=#4D72F3;gradientDirection=north;fillColor=#3334B9;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.bedrock;" parent="1" vertex="1">
+                    <mxGeometry x="330" y="360" width="78" height="78" as="geometry"/>
+                </mxCell>
+                <mxCell id="lambda" value="AWS Lambda&#10;check_url_reputation&#10;python3.12 · 15s · 256MB" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=#F78E04;gradientDirection=north;fillColor=#D05C17;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;" parent="1" vertex="1">
+                    <mxGeometry x="640" y="360" width="78" height="78" as="geometry"/>
+                </mxCell>
+                <mxCell id="secrets" value="AWS Secrets Manager&#10;scamscope/urlhaus-auth-key" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=#F54749;gradientDirection=north;fillColor=#C7131F;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.secrets_manager;" parent="1" vertex="1">
+                    <mxGeometry x="960" y="220" width="78" height="78" as="geometry"/>
+                </mxCell>
+                <mxCell id="iam" value="AWS IAM&#10;scamscope-lambda-role&#10;(least privilege)" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=#F54749;gradientDirection=north;fillColor=#C7131F;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.identity_and_access_management;" parent="1" vertex="1">
+                    <mxGeometry x="640" y="560" width="78" height="78" as="geometry"/>
+                </mxCell>
+                <mxCell id="cw" value="Amazon CloudWatch&#10;Logs (invocation proof)" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=#F54749;gradientDirection=north;fillColor=#B0084D;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudwatch_2;" parent="1" vertex="1">
+                    <mxGeometry x="960" y="560" width="78" height="78" as="geometry"/>
+                </mxCell>
+                <mxCell id="urlhaus" value="URLhaus&#10;abuse.ch threat intel&#10;(external API)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECECFF;strokeColor=#6C8EBF;fontColor=#232F3E;fontSize=12;verticalAlign=middle;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="1200" y="356" width="130" height="86" as="geometry"/>
+                </mxCell>
+                <mxCell id="e1" value="1 · message" style="endArrow=block;html=1;strokeColor=#232F3E;fontColor=#232F3E;fontSize=11;rounded=0;" parent="1" source="user" target="bedrock" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e2" value="2 · invoke (boto3)&#10;@tool check_url_reputation" style="endArrow=block;html=1;strokeColor=#D05C17;fontColor=#232F3E;fontSize=11;rounded=0;" parent="1" source="bedrock" target="lambda" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e3" value="3 · GetSecretValue" style="endArrow=block;html=1;strokeColor=#C7131F;fontColor=#232F3E;fontSize=11;rounded=0;" parent="1" source="lambda" target="secrets" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e4" value="4 · lookup (URL string only,&#10;never fetches the link)" style="endArrow=block;html=1;strokeColor=#6C8EBF;fontColor=#232F3E;fontSize=11;rounded=0;" parent="1" source="lambda" target="urlhaus" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e5" value="5 · structured verdict&#10;(threat_match / no_match /&#10;invalid_input / lookup_failed)" style="endArrow=block;html=1;strokeColor=#D05C17;fontColor=#232F3E;fontSize=11;rounded=0;dashed=1;" parent="1" source="lambda" target="bedrock" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="679" y="470"/>
+                            <mxPoint x="369" y="470"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e6" value="6 · cited answer" style="endArrow=block;html=1;strokeColor=#232F3E;fontColor=#232F3E;fontSize=11;rounded=0;dashed=1;" parent="1" source="bedrock" target="user" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="369" y="330"/>
+                            <mxPoint x="110" y="330"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e7" value="assumes role" style="endArrow=block;html=1;strokeColor=#C7131F;fontColor=#687078;fontSize=10;rounded=0;dashed=1;" parent="1" source="iam" target="lambda" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e8" value="writes logs" style="endArrow=block;html=1;strokeColor=#B0084D;fontColor=#687078;fontSize=10;rounded=0;dashed=1;" parent="1" source="lambda" target="cw" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

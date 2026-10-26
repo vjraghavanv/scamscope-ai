@@ -1,0 +1,23 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Secrets — never commit real values (the key lives in AWS Secrets Manager)
+.env
+*.env
+!.env.example
+
+# Lambda build artifacts
+lambda/**/build/
+lambda/**/function.zip
+
+# Node (only used locally to render the demo video/figures)
+node_modules/
+
+# OS
+.DS_Store
+
+# Large media are fine to commit for the submission, but regenerate-able:
+# demo/video/*.webm  (uncomment to keep them out of git history)

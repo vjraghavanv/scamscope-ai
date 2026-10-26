@@ -1,0 +1,6 @@
+[[slnc 1600]]This is ScamScope, a phishing analysis agent on Amazon Bedrock Nova Pro. It reads suspicious messages, but it could only guess whether a link was actually dangerous.
+[[slnc 900]]Here is a classic phishing message. Urgency, a twenty four hour threat, and a link to verify your identity.
+[[slnc 700]]Before, the agent spotted the social engineering cues, but on the link itself it could only speculate. No verification.
+[[slnc 700]]So I gave it one new tool. check U R L reputation. The agent calls an A W S Lambda, which reads a key from Secrets Manager and checks U R L house threat intelligence, sending only the link text, never opening the hostile link.
+[[slnc 600]]Now the same message gets a verified answer. U R L house confirms the link is malicious, associated with a malware download. A guess became a fact.
+[[slnc 600]]One tool. Lambda, Secrets Manager, I A M, and CloudWatch. It turned a plausible guess into a verified threat call. And the same pattern drops into any agent that reads untrusted text.

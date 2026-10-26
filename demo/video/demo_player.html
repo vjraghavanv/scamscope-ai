@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>ScamScope — Give Your Agent a Tool</title>
+<style>
+  :root{
+    --bg:#0b1020; --panel:#121a33; --ink:#e8eefc; --muted:#8aa0c7;
+    --line:#223157; --accent:#4da3ff; --good:#37d67a; --bad:#ff5c7a; --warn:#ffcf5c;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:radial-gradient(1200px 700px at 70% -10%, #15224a 0%, var(--bg) 55%);
+    color:var(--ink); font:16px/1.5 -apple-system,"SF Pro Text",Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    width:1280px; height:720px; overflow:hidden; position:relative;
+  }
+  .stage{position:absolute; inset:0; padding:46px 64px; display:flex; flex-direction:column}
+  .brand{display:flex; align-items:center; gap:14px; opacity:0; transform:translateY(8px); animation:fade .6s ease forwards}
+  .logo{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#7a5cff);display:grid;place-items:center;font-size:24px;box-shadow:0 8px 30px rgba(77,163,255,.35)}
+  .brand h1{font-size:26px;letter-spacing:.3px}
+  .brand .sub{color:var(--muted);font-size:14px}
+  .kicker{color:var(--accent);font-weight:600;letter-spacing:2px;font-size:12px;text-transform:uppercase}
+
+  .scene{position:absolute; inset:0; padding:46px 64px; opacity:0; pointer-events:none; display:flex; flex-direction:column; justify-content:center}
+  .scene.show{opacity:1; pointer-events:auto}
+  .fade-in{opacity:0; transform:translateY(14px); animation:fade .7s ease forwards}
+  @keyframes fade{to{opacity:1;transform:none}}
+
+  .card{background:linear-gradient(180deg,var(--panel),#0e1630);border:1px solid var(--line);border-radius:18px;padding:26px 30px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+  .label{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  .msg{font-size:18px;line-height:1.6;color:#dfe8fb}
+  .url{font-family:"SF Mono",ui-monospace,Menlo,monospace;color:var(--warn);word-break:break-all}
+
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+  .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;font-size:13px;font-weight:600}
+  .pill.before{background:rgba(255,207,92,.12);color:var(--warn);border:1px solid rgba(255,207,92,.3)}
+  .pill.after{background:rgba(55,214,122,.12);color:var(--good);border:1px solid rgba(55,214,122,.3)}
+  .verdict{font-size:17px;line-height:1.55}
+  .hedge{color:var(--warn)}
+  .confirmed{color:var(--good);font-weight:600}
+  .quote{border-left:3px solid var(--line);padding-left:16px;color:#cdd9f3}
+
+  .toolcall{font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:15px;background:#0a1228;border:1px solid var(--line);border-radius:12px;padding:16px 18px;color:#bfe3ff}
+  .toolcall .fn{color:var(--accent);font-weight:700}
+  .arrow{color:var(--muted)}
+
+  .flow{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+  .node{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 18px;text-align:center;min-width:150px}
+  .node .t{font-weight:700;font-size:15px}
+  .node .s{color:var(--muted);font-size:12px;margin-top:3px}
+  .node.aws{border-color:rgba(77,163,255,.4)}
+  .conn{color:var(--accent);font-size:22px}
+
+  h2.title{font-size:34px;margin-bottom:6px}
+  .foot{position:absolute;left:64px;bottom:34px;color:var(--muted);font-size:12px}
+  .big{font-size:40px;font-weight:800;letter-spacing:.3px}
+  .grad{background:linear-gradient(90deg,var(--accent),#7a5cff);-webkit-background-clip:text;background-clip:text;color:transparent}
+  ul.clean{list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:14px}
+  ul.clean li{display:flex;gap:10px;align-items:flex-start}
+  .tick{color:var(--good);font-weight:800}
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="brand">
+      <div class="logo">🛡️</div>
+      <div>
+        <h1>ScamScope</h1>
+        <div class="sub">Phishing-analysis agent · Amazon Bedrock (Nova Pro) · Strands Agents</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 1: the challenge -->
+  <section class="scene" id="s1">
+    <div class="kicker fade-in">Give Your Agent a Tool</div>
+    <h2 class="title fade-in" style="animation-delay:.15s">Take an agent you already built.<br>Give it <span class="grad">one new tool</span>. Show the before &amp; after.</h2>
+    <p class="fade-in" style="animation-delay:.45s;color:var(--muted);max-width:820px;margin-top:8px">
+      ScamScope reads a suspicious message and explains the phishing warning signs.
+      Its blind spot: it could only <em>guess</em> whether a link was actually dangerous.
+    </p>
+  </section>
+
+  <!-- SCENE 2: the message -->
+  <section class="scene" id="s2">
+    <div class="kicker fade-in">The message under analysis</div>
+    <div class="card fade-in" style="animation-delay:.2s;margin-top:16px">
+      <div class="label">Suspicious message</div>
+      <p class="msg">
+        <strong>URGENT:</strong> Your account has been temporarily suspended due to unusual
+        sign-in activity. To avoid permanent closure within 24 hours, verify your identity
+        immediately here:<br>
+        <span class="url">http://221.15.172.85:48113/bin.sh</span><br>
+        Failure to confirm will result in loss of access. — Security Team
+      </p>
+    </div>
+  </section>
+
+  <!-- SCENE 3: BEFORE -->
+  <section class="scene" id="s3">
+    <span class="pill before fade-in">⚠ BEFORE — no tool, reasoning only</span>
+    <div class="card fade-in" style="animation-delay:.2s;margin-top:16px">
+      <div class="label">Baseline agent · Amazon Nova Pro</div>
+      <p class="verdict">
+        Correctly spots urgency, account-loss threats, and a credential request.
+        But on the actual link it can only speculate:
+      </p>
+      <p class="quote hedge" style="margin-top:14px">
+        “The link provided does not appear to be associated with a legitimate domain…”
+      </p>
+      <p style="margin-top:14px;color:var(--muted)">No verification. The model is guessing — and Bedrock's content filter even truncates the answer.</p>
+    </div>
+  </section>
+
+  <!-- SCENE 4: the tool call -->
+  <section class="scene" id="s4">
+    <div class="kicker fade-in">The one new tool</div>
+    <h2 class="title fade-in" style="animation-delay:.1s;font-size:28px"><span class="grad">check_url_reputation</span> — a URLhaus fact-checker</h2>
+    <div class="toolcall fade-in" style="animation-delay:.3s;margin-top:14px">
+      &gt; agent reasons… then calls<br>
+      <span class="fn">Tool #1: check_url_reputation</span>(url=<span class="url">"http://221.15.172.85:48113/bin.sh"</span>)
+    </div>
+    <div class="flow fade-in" style="animation-delay:.6s">
+      <div class="node"><div class="t">Strands Agent</div><div class="s">Nova Pro reasoning</div></div>
+      <span class="conn">→</span>
+      <div class="node aws"><div class="t">AWS Lambda</div><div class="s">check_url_reputation</div></div>
+      <span class="conn">→</span>
+      <div class="node aws"><div class="t">Secrets Manager</div><div class="s">URLhaus Auth-Key</div></div>
+      <span class="conn">→</span>
+      <div class="node"><div class="t">URLhaus</div><div class="s">threat intel (string only)</div></div>
+    </div>
+    <p class="fade-in" style="animation-delay:.9s;color:var(--muted);margin-top:16px;text-align:center">Safe by design: the tool sends only the URL <em>string</em> — it never opens the hostile link.</p>
+  </section>
+
+  <!-- SCENE 5: AFTER -->
+  <section class="scene" id="s5">
+    <span class="pill after fade-in">✓ AFTER — with the tool</span>
+    <div class="card fade-in" style="animation-delay:.2s;margin-top:16px">
+      <div class="label">Tooled agent · live URLhaus verdict</div>
+      <p class="verdict confirmed">“The URL check result confirms that the link is malicious. URLhaus lists it as an online threat associated with malware download.”</p>
+      <p class="verdict" style="margin-top:14px">
+        <strong>Calibrated judgement:</strong> very likely a phishing attempt — based on both the
+        text indicators <em>and</em> the confirmed malicious link.
+      </p>
+      <p class="verdict" style="margin-top:12px;color:var(--good)"><strong>Do not click the link.</strong> Report it, and enable MFA.</p>
+    </div>
+  </section>
+
+  <!-- SCENE 6: close -->
+  <section class="scene" id="s6">
+    <div class="kicker fade-in">What changed</div>
+    <h2 class="big fade-in" style="animation-delay:.12s">A guess became a <span class="grad">verified fact.</span></h2>
+    <ul class="clean fade-in" style="animation-delay:.4s;max-width:860px">
+      <li><span class="tick">✓</span><span><strong>AWS Lambda</strong> hosts the tool · <strong>Secrets Manager</strong> holds the key · <strong>IAM</strong> least-privilege · <strong>CloudWatch</strong> proves real runs.</span></li>
+      <li><span class="tick">✓</span><span>Safe by design — the tool never fetches the hostile URL.</span></li>
+      <li><span class="tick">✓</span><span>Reusable pattern: drop URL reputation into any agent that reads untrusted text.</span></li>
+    </ul>
+    <p class="fade-in" style="animation-delay:.8s;color:var(--muted);margin-top:22px">ScamScope · Amazon Bedrock Nova Pro + AWS Lambda · us-east-1</p>
+  </section>
+
+  <div class="foot">Live run · us-east-1 · real Lambda + real URLhaus</div>
+
+<script>
+  // Scene timing (ms). Total ~ sum of durations. Playwright records the whole run.
+  // Durations matched to the measured narration segments (seg - 450ms crossfade gap),
+  // so the voiceover track (narration.m4a) stays in sync with each scene.
+  const scenes = [
+    {id:'s1', ms:9550},   // seg1 ~10.0s
+    {id:'s2', ms:6150},   // seg2 ~6.6s
+    {id:'s3', ms:6900},   // seg3 ~7.3s
+    {id:'s4', ms:13650},  // seg4 ~14.1s
+    {id:'s5', ms:8650},   // seg5 ~9.1s
+    {id:'s6', ms:11300},  // seg6 ~11.7s
+  ];
+  function reset(el){ // restart CSS animations
+    el.querySelectorAll('.fade-in').forEach(n=>{ n.style.animation='none'; void n.offsetWidth; n.style.animation=''; });
+  }
+  async function play(){
+    for(const s of scenes){
+      const el = document.getElementById(s.id);
+      el.classList.add('show'); reset(el);
+      await new Promise(r=>setTimeout(r, s.ms));
+      el.classList.remove('show');
+      await new Promise(r=>setTimeout(r, 450)); // crossfade gap
+    }
+    document.body.setAttribute('data-done','1'); // signal for recorder
+  }
+  window.__startDemo = play;
+</script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>ScamScope article figures</title>
+<style>
+  :root{--bg:#0b1020;--term:#0a0e1a;--ink:#e8eefc;--muted:#8aa0c7;--green:#37d67a;--amber:#ffcf5c;--red:#ff5c7a;--blue:#4da3ff;--line:#223157}
+  *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,"SF Pro Text",Segoe UI,Roboto,sans-serif}
+  body{background:#070b16}
+  .fig{width:1280px;padding:40px 48px;background:radial-gradient(1000px 600px at 75% -10%,#15224a,#0b1020 60%);color:var(--ink)}
+  .cap{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--blue);font-weight:700;margin-bottom:6px}
+  h2{font-size:26px;margin-bottom:18px}
+  .term{background:var(--term);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+  .bar{display:flex;gap:8px;padding:12px 16px;background:#11182b;border-bottom:1px solid var(--line)}
+  .dot{width:12px;height:12px;border-radius:50%}
+  .r{background:#ff5f56}.y{background:#ffbd2e}.g{background:#27c93f}
+  .barlabel{margin-left:12px;color:var(--muted);font-size:13px}
+  pre{font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:14.5px;line-height:1.6;padding:20px 22px;white-space:pre-wrap;word-break:break-word}
+  .prompt{color:var(--green)}.cmd{color:#dfe8fb}.dim{color:var(--muted)}
+  .amber{color:var(--amber)}.green{color:var(--green);font-weight:600}.red{color:var(--red)}.blue{color:var(--blue)}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .card{background:linear-gradient(180deg,#121a33,#0e1630);border:1px solid var(--line);border-radius:14px;padding:22px 24px}
+  .k{color:var(--muted);font-size:13px;letter-spacing:.5px}
+  .v{font-family:"SF Mono",Menlo,monospace;font-size:15px;color:#dfe8fb;margin-top:4px;word-break:break-all}
+  .pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;background:rgba(55,214,122,.14);color:var(--green);border:1px solid rgba(55,214,122,.35)}
+  .lp{font-family:"SF Mono",Menlo,monospace;font-size:13.5px;line-height:1.55;color:#bfe3ff;background:#0a1228;border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-top:8px}
+  .foot{color:var(--muted);font-size:12px;margin-top:16px}
+</style></head>
+<body>
+
+<!-- FIGURE 1: terminal before/after -->
+<div class="fig" id="fig1">
+  <div class="cap">Figure 1 — live before / after (real run)</div>
+  <h2>Same phishing message. Before the tool it guessed; after, it verified.</h2>
+  <div class="term">
+    <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="barlabel">scamscope-ai — before_after.py — us-east-1</span></div>
+<pre><span class="prompt">$</span> <span class="cmd">PYTHONPATH=src python demo/before_after.py "http://221.15.172.85:48113/bin.sh"</span>
+
+<span class="dim">── SUSPICIOUS MESSAGE ─────────────────────────────────────────</span>
+URGENT: Your account has been temporarily suspended... verify here:
+<span class="amber">http://221.15.172.85:48113/bin.sh</span>
+
+<span class="dim">── BEFORE  (baseline agent · Nova Pro · no tool) ──────────────</span>
+Spots urgency, account-loss threats, credential request. On the link:
+<span class="amber">"...does not appear to be associated with a legitimate domain"</span>
+<span class="red">[generated text truncated by the Bedrock content filter]</span>   <span class="dim">← only a guess</span>
+
+<span class="dim">── AFTER   (tooled agent · + check_url_reputation) ───────────</span>
+&lt;thinking&gt; I should check the URL to see if it is known to be malicious. &lt;/thinking&gt;
+<span class="blue">Tool #1: check_url_reputation</span>
+<span class="green">"The URL check result confirms that the link is malicious. URLhaus lists it
+as an online threat associated with malware download."</span>
+Calibrated judgement: very likely a phishing attempt.
+<span class="green">Do not click the link.</span> Report it, and enable MFA.</pre>
+  </div>
+  <div class="foot">Live run 2026-10-26 · Amazon Bedrock Nova Pro + deployed AWS Lambda · real URLhaus verdict</div>
+</div>
+
+<!-- FIGURE 2: AWS resources -->
+<div class="fig" id="fig2">
+  <div class="cap">Figure 2 — the tool, deployed on AWS</div>
+  <h2>One Lambda, one secret, least-privilege IAM</h2>
+  <div class="grid">
+    <div class="card">
+      <div class="k">AWS LAMBDA &nbsp;<span class="pill">● Active</span></div>
+      <div class="v">check_url_reputation</div>
+      <div class="k" style="margin-top:14px">RUNTIME</div><div class="v">python3.12 · handler.handler</div>
+      <div class="k" style="margin-top:14px">LIMITS</div><div class="v">timeout 15s · memory 256 MB</div>
+      <div class="k" style="margin-top:14px">REGION</div><div class="v">us-east-1</div>
+    </div>
+    <div class="card">
+      <div class="k">AWS SECRETS MANAGER</div>
+      <div class="v">scamscope/urlhaus-auth-key</div>
+      <div class="k" style="margin-top:14px">READ AT RUNTIME, NEVER IN CODE</div>
+      <div class="v blue">env → SCAMSCOPE_URLHAUS_SECRET_NAME</div>
+      <div class="k" style="margin-top:18px">IAM — least privilege (inline)</div>
+      <div class="lp">Allow <span class="green">secretsmanager:GetSecretValue</span>
+  on scamscope/urlhaus-auth-key-* ONLY
+
+Allow <span class="green">logs:CreateLogGroup / Stream / PutLogEvents</span>
+  on /aws/lambda/check_url_reputation ONLY</div>
+    </div>
+  </div>
+  <div class="foot">Safe by design: the Lambda sends only the URL <i>string</i> to URLhaus — it never fetches the hostile link.</div>
+</div>
+
+<!-- FIGURE 3: CloudWatch proof -->
+<div class="fig" id="fig3">
+  <div class="cap">Figure 3 — CloudWatch proves real invocations</div>
+  <h2>The agent really called the Lambda</h2>
+  <div class="term">
+    <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="barlabel">CloudWatch Logs — /aws/lambda/check_url_reputation</span></div>
+<pre><span class="green">REPORT</span> RequestId: a910a12b…039f  Duration: <span class="blue">1562.72 ms</span>  Billed: 2062 ms  Mem: 256 MB  Used: 91 MB  Init: 498 ms
+<span class="green">REPORT</span> RequestId: 5a2c4916…315b  Duration: <span class="blue">1422.35 ms</span>  Billed: 1423 ms  Mem: 256 MB  Used: 91 MB
+<span class="green">REPORT</span> RequestId: d244149f…6ed2  Duration: <span class="blue">366.24 ms</span>   Billed: 367 ms   Mem: 256 MB  Used: 91 MB
+<span class="green">REPORT</span> RequestId: 524f41f3…7946  Duration: <span class="blue">1.61 ms</span>     Billed: 2 ms     Mem: 256 MB  Used: 91 MB
+<span class="green">REPORT</span> RequestId: e2d63d88…b995  Duration: <span class="blue">1.87 ms</span>     Billed: 357 ms   Mem: 256 MB  Used: 71 MB  Init: 355 ms</pre>
+  </div>
+  <div class="foot">Warm calls ~1.4 s (the live URLhaus lookup); cached/invalid-input calls return in ~2 ms. Real executions, not mocks.</div>
+</div>
+
+</body></html>
